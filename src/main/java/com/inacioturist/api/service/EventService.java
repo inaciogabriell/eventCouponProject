@@ -1,10 +1,16 @@
 package com.inacioturist.api.service;
 
+import com.inacioturist.api.domain.coupon.Coupon;
 import com.inacioturist.api.domain.event.Event;
+import com.inacioturist.api.domain.event.EventDetailsDTO;
 import com.inacioturist.api.domain.event.EventRequestDTO;
+import com.inacioturist.api.domain.event.EventResponseDTO;
 import com.inacioturist.api.entities.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -19,9 +25,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -31,6 +41,12 @@ public class EventService {
 
     @Autowired
     private S3Client s3Client;
+
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private CouponService couponService;
 
     @Autowired
     private EventRepository repository;
@@ -43,6 +59,7 @@ public class EventService {
         }
 
         Event newEvent = new Event();
+
         newEvent.setTitle(data.title());
         newEvent.setDescription(data.description());
         newEvent.setEventUrl(data.eventUrl());
@@ -51,6 +68,10 @@ public class EventService {
         newEvent.setRemote(data.remote());
 
         repository.save(newEvent);
+
+        if(!data.remote()) {
+            this.addressService.createAddress(data, newEvent);
+        }
 
         return newEvent;
     }
