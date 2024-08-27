@@ -1,6 +1,7 @@
 package com.inacioturist.api.domain.address;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.inacioturist.api.domain.event.Event;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonBackReference
     private Event event;
 
 }

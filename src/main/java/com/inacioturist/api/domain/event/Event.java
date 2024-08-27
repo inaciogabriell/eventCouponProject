@@ -1,5 +1,6 @@
 package com.inacioturist.api.domain.event;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.inacioturist.api.domain.address.Address;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class Event {
     private Date date;
 
     @OneToOne(mappedBy = "event", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Address address;
 
 }

@@ -1,5 +1,6 @@
 package com.inacioturist.api.domain.coupon;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.inacioturist.api.domain.event.Event;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class Coupon {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonBackReference
     private Event event;
 
 }
